@@ -2,9 +2,7 @@
 
 """
 	Project Bluebox
-
 	Copyright (C) <2015> <University of Stuttgart>
-
 	This software may be modified and distributed under the terms
 	of the MIT license.  See the LICENSE file for details.
 """
@@ -38,9 +36,7 @@ log = logging.getLogger()
 
 
 """
-
 Data schema
-
 """
 
 @app.route("/api_analytics/tablestructure", methods=["GET"])
@@ -53,16 +49,17 @@ def getTableStructure():
 	# Retrieve all table names
 	cursor.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name ASC")
 	tableNames = cursor.fetchall()
-
 	tableData = {}
 
 	# Retrieve the column names for the corresponding tables
 	for table in tableNames:
-		cursor.execute("PRAGMA table_info(" + table[0] + ")")
+		tableInfoStatement = u'PRAGMA table_info({})'.format(table[0])
+		cursor.execute(tableInfoStatement)
 		columnNames = cursor.fetchall()
 
 		# Retrieve the first 5 entries from each table
-		cursor.execute("SELECT * FROM " + table[0] + " LIMIT 5")
+		valueStatement = u'SELECT * FROM {} LIMIT 5'.format(table[0])
+		cursor.execute(valueStatement)
 		rowValues = cursor.fetchall()
 
 		# Dictionary which combines column names and row entries
@@ -86,9 +83,7 @@ def getTableStructure():
 
 
 """
-
 PLOTS
-
 """
 
 def doPlot1(data, nrDataSource):
@@ -122,9 +117,7 @@ def getListOfKeys(d):
 
 
 """
-
 HTTP-API endpoints
-
 """
 
 @app.route("/api_analytics/plot/<plotType>", methods=["GET"])
